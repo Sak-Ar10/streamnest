@@ -3,6 +3,8 @@ import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
+import authRoutes from './routes/auth.js';
+
 const app = express();
 
 // Security and utility middleware
@@ -15,6 +17,9 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+
+// API Routes
+app.use('/api/auth', authRoutes);
 
 // Health check endpoint (Used by Render, proxy, uptime monitors)
 app.get('/api/health', (req, res) => {
