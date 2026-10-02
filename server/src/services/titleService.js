@@ -1,8 +1,12 @@
 import { query } from '../config/db.js';
 import { HttpError } from '../utils/httpError.js';
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const checkProfileKids = async (profileId, userId) => {
-  if (!profileId) return false;
+  if (!profileId || profileId === 'undefined' || profileId === 'null' || !UUID_REGEX.test(profileId)) {
+    return false;
+  }
   const res = await query(`SELECT is_kids FROM profiles WHERE id = $1 AND user_id = $2`, [profileId, userId]);
   return res.rows[0]?.is_kids || false;
 };
@@ -74,6 +78,9 @@ export const getTitles = async (userId, profileId, { q, genre, type }) => {
 };
 
 export const getTitleById = async (id, userId, profileId) => {
+  if (!id || !UUID_REGEX.test(id)) {
+    throw new HttpError(404, 'Title not found', 'NOT_FOUND');
+  }
   const isKids = await checkProfileKids(profileId, userId);
   const kidsFilter = buildKidsFilter(isKids);
 

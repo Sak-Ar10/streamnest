@@ -13,9 +13,23 @@ const app = express();
 
 // Security and utility middleware
 app.use(helmet());
+const clientOrigin = process.env.CLIENT_ORIGIN?.replace(/\/$/, '') || 'http://localhost:5173';
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const clean = origin.replace(/\/$/, '');
+      if (
+        clean === clientOrigin ||
+        clean === 'http://localhost:5173' ||
+        clean === 'http://127.0.0.1:5173' ||
+        clean.endsWith('.vercel.app') ||
+        clean.endsWith('.onrender.com')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );

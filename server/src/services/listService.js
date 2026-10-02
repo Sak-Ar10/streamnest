@@ -1,7 +1,12 @@
 import { query } from '../config/db.js';
 import { HttpError } from '../utils/httpError.js';
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const verifyProfileOwnership = async (userId, profileId) => {
+  if (!profileId || !UUID_REGEX.test(profileId)) {
+    throw new HttpError(400, 'Invalid profile ID format', 'BAD_REQUEST');
+  }
   const check = await query(`SELECT id FROM profiles WHERE id = $1 AND user_id = $2`, [profileId, userId]);
   if (check.rowCount === 0) {
     throw new HttpError(404, 'Profile not found or access denied', 'NOT_FOUND');
@@ -23,6 +28,9 @@ export const getList = async (userId, profileId) => {
 
 export const addToList = async (userId, profileId, titleId) => {
   await verifyProfileOwnership(userId, profileId);
+  if (!titleId || !UUID_REGEX.test(titleId)) {
+    throw new HttpError(400, 'Invalid title ID format', 'BAD_REQUEST');
+  }
   
   // Idempotent add
   await query(`
@@ -35,6 +43,9 @@ export const addToList = async (userId, profileId, titleId) => {
 
 export const removeFromList = async (userId, profileId, titleId) => {
   await verifyProfileOwnership(userId, profileId);
+  if (!titleId || !UUID_REGEX.test(titleId)) {
+    throw new HttpError(400, 'Invalid title ID format', 'BAD_REQUEST');
+  }
   
   await query(`
     DELETE FROM my_list WHERE profile_id = $1 AND title_id = $2

@@ -3,7 +3,7 @@
  * Ensure the server is running on http://localhost:4000 before executing.
  * Run with: node test_auth.js
  */
-const http = require('http');
+import http from 'http';
 
 const API_URL = 'http://localhost:4000/api/auth';
 let cookie = '';

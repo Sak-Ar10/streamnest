@@ -13,6 +13,7 @@ export const apiClient = async (endpoint, { body, ...customConfig } = {}) => {
   
   const config = {
     method: body ? 'POST' : 'GET',
+    credentials: 'include',
     ...customConfig,
     headers: {
       ...headers,
