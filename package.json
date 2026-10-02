@@ -1,0 +1,18 @@
+{
+  "name": "streamnest-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "StreamNest - Production-quality streaming web app",
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "dev": "node scripts/dev.js",
+    "build:client": "npm --prefix client run build",
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install",
+    "migrate": "npm --prefix server run migrate",
+    "seed": "npm --prefix server run seed"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
+}
